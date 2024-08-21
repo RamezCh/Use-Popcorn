@@ -51,24 +51,26 @@ const average = arr =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 export default function App() {
+  const [movies, setMovies] = useState(tempMovieData);
+
   return (
     <>
-      <NavBar />
-      <Main />
+      <NavBar movies={movies} />
+      <Main movies={movies} />
     </>
   );
 }
-
-function NavBar() {
+// Structural Component
+function NavBar({ movies }) {
   return (
     <nav className="nav-bar">
       <Logo />
       <Search />
-      <NumResults />
+      <NumResults movies={movies} />
     </nav>
   );
 }
-
+// Stateless/Presentational Component
 function Logo() {
   return (
     <div className="logo">
@@ -77,15 +79,15 @@ function Logo() {
     </div>
   );
 }
-
-function NumResults() {
+// Stateless/Presentational Component
+function NumResults({ movies }) {
   return (
     <p className="num-results">
-      Found <strong>X</strong> results
+      Found <strong>{movies.length}</strong> results
     </p>
   );
 }
-
+// Stateful Component
 function Search() {
   const [query, setQuery] = useState('');
   return (
@@ -98,17 +100,17 @@ function Search() {
     />
   );
 }
-
-function Main() {
+// Structural Component
+function Main({ movies }) {
   return (
     <main className="main">
-      <ListBox />
+      <ListBox movies={movies} />
       <WatchedBox />
     </main>
   );
 }
-
-function ListBox() {
+// Stateful Component
+function ListBox({ movies }) {
   const [isOpen1, setIsOpen1] = useState(true);
 
   return (
@@ -116,14 +118,12 @@ function ListBox() {
       <button className="btn-toggle" onClick={() => setIsOpen1(open => !open)}>
         {isOpen1 ? '–' : '+'}
       </button>
-      {isOpen1 && <MovieList />}
+      {isOpen1 && <MovieList movies={movies} />}
     </div>
   );
 }
-
-function MovieList() {
-  const [movies, setMovies] = useState(tempMovieData);
-
+// Stateful Component
+function MovieList({ movies }) {
   return (
     <ul className="list">
       {movies?.map(movie => (
@@ -132,7 +132,7 @@ function MovieList() {
     </ul>
   );
 }
-
+// Stateless/Presentational Component
 function Movie({ movie }) {
   return (
     <li>
@@ -147,7 +147,7 @@ function Movie({ movie }) {
     </li>
   );
 }
-
+// Stateful Component
 function WatchedBox() {
   const [isOpen2, setIsOpen2] = useState(true);
   const [watched, setWatched] = useState(tempWatchedData);
@@ -166,7 +166,7 @@ function WatchedBox() {
     </div>
   );
 }
-
+// Stateless/Presentational Component
 function WatchedSummary({ watched }) {
   const avgImdbRating = average(watched.map(movie => movie.imdbRating));
   const avgUserRating = average(watched.map(movie => movie.userRating));
@@ -196,7 +196,7 @@ function WatchedSummary({ watched }) {
     </div>
   );
 }
-
+// Stateless/Presentational Component
 function WatchedMovieList({ watched }) {
   return (
     <ul className="list">
@@ -206,7 +206,7 @@ function WatchedMovieList({ watched }) {
     </ul>
   );
 }
-
+// Stateless/Presentational Component
 function WatchedMovie({ movie }) {
   return (
     <li>
@@ -247,4 +247,8 @@ Structural
 -> Screens
 -> Result of composition
 -> Large and non-reusable, but don't have to
+*/
+
+/*
+Prop drilling is when you pass a state or value into a lot of components to reach a certain component that is deeply nested
 */
