@@ -229,3 +229,22 @@ function WatchedMovie({ movie }) {
     </li>
   );
 }
+
+/*
+Components will be either:
+Stateless/presentational
+-> Receive props and present received data
+-> Usually small components like logo or results
+-> Highly reusable
+
+Stateful
+-> Have state
+-> Reusable
+
+Structural
+-> Pages
+-> Layouts
+-> Screens
+-> Result of composition
+-> Large and non-reusable, but don't have to
+*/
