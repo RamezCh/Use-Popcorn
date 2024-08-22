@@ -252,3 +252,22 @@ Structural
 /*
 Prop drilling is when you pass a state or value into a lot of components to reach a certain component that is deeply nested
 */
+
+/*
+What is Component Composition?
+It is when we use components inside other components.
+
+Like App Component.
+
+But it can affect re-usability.
+
+This is where children comes in and lets us be more dynamic and reuse more components.
+
+We can pass components as the children prop and hence making more components re-usable
+
+This is component composition: combining different components using the children prop (or explicitly defined props)
+
+It also fixes prop drilling
+
+This is possible because components do not need to know what is going to be passed in advance
+*/
