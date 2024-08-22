@@ -11,7 +11,13 @@ root.render(
       // <App />
     }
     <StarRating maxRating={10} />
-    <StarRating />
+    <StarRating
+      maxRating={5}
+      size={36}
+      className={'test'}
+      messages={['Terrible', 'Bad', 'Okay', 'Good', 'Amazing']}
+      defaultRating={3}
+    />
     {/* <StarRating
       maxRating={5}
       messages={["Terrible", "Bad", "Okay", "Good", "Amazing"]}
