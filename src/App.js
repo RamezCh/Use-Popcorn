@@ -287,3 +287,21 @@ It also fixes prop drilling
 
 This is possible because components do not need to know what is going to be passed in advance
 */
+
+/*
+Props as an API
+
+Components always created by someone and consumed by someone
+
+On a Team creator and consumer won't be the same person, so we need to think in their prespective
+
+Creator builds component and defines what props to be accepted
+
+Consumer uses it and gives values to the props
+
+Think of Component Props as a Public API
+
+We are defining the public interface of our component and choosing how much complexity of the component we want to expose to the consumer of the API
+
+In the end a component is basically just an abstraction
+*/
