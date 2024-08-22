@@ -69,6 +69,10 @@ export default function App() {
           <WatchedSummary watched={watched} />
           <WatchedMovieList watched={watched} />
         </Box>
+        {/*
+        Similar to children but passing it as a prop
+        <Box2 element={<MovieList movies={movies} />} />
+        */}
       </Main>
     </>
   );
@@ -132,6 +136,24 @@ function Box({ children }) {
     </div>
   );
 }
+
+/*
+Explicitly defined prop
+Works as children but you pass component as prop instead of between opening n closing tag
+
+function Box2({ element }) {
+  const [isOpen, setIsOpen] = useState(true);
+
+  return (
+    <div className="box">
+      <button className="btn-toggle" onClick={() => setIsOpen(open => !open)}>
+        {isOpen ? '–' : '+'}
+      </button>
+      {isOpen && element}
+    </div>
+  );
+}
+*/
 
 // Stateful Component
 function MovieList({ movies }) {
