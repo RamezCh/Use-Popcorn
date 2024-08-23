@@ -71,6 +71,7 @@ It keeps components synchronized with some external system like API movie data
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const query = 'interstellar';
   // [] means only run on mount (1st render)
   // useEffect hook we used it to register an effect
@@ -82,11 +83,13 @@ export default function App() {
   // So we put inside a function that is asynchronous lol
   useEffect(function () {
     async function fetchMovies() {
+      setIsLoading(true);
       const res = await fetch(`${API}&s=${query}`);
       const data = await res.json();
       setMovies(data.Search);
       // State is set after function called
       // Console logging movies will show empty array
+      setIsLoading(false);
     }
 
     fetchMovies();
@@ -103,9 +106,8 @@ export default function App() {
       </NavBar>
 
       <Main>
-        <Box>
-          <MovieList movies={movies} />
-        </Box>
+        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />}</Box>
+
         <Box>
           <WatchedSummary watched={watched} />
           <WatchedMovieList watched={watched} />
@@ -117,6 +119,10 @@ export default function App() {
       </Main>
     </>
   );
+}
+
+function Loader() {
+  return <p className="loader">Loading...</p>;
 }
 // Structural Component
 function NavBar({ children }) {
