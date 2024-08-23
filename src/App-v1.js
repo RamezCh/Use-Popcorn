@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const tempMovieData = [
   {
@@ -50,25 +50,9 @@ const tempWatchedData = [
 const average = arr =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
-const API = 'http://www.omdbapi.com/?i=tt3896198&apikey=9f23dce6';
-
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
-  // [] means only run on mount (1st render)
-  // useEffect hook we used it to register an effect
-  // Meaning when do we want to run this component?
-  // When it is painted on the Screen
-  // How many times?
-  // Once since we used []
-  useEffect(function () {
-    fetch(`${API}&s=interstellar`)
-      .then(res => res.json())
-      .then(data => setMovies(data.Search));
-  }, []);
-  // If we set state here, it will cause an infinite loop and take a lot of resources
-  // We can't have side effects here
-  // We can't set state here
+  const [movies, setMovies] = useState(tempMovieData);
+  const [watched, setWatched] = useState(tempWatchedData);
 
   return (
     <>
