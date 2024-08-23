@@ -72,6 +72,7 @@ export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const query = 'interstellar';
   // [] means only run on mount (1st render)
   // useEffect hook we used it to register an effect
@@ -83,13 +84,27 @@ export default function App() {
   // So we put inside a function that is asynchronous lol
   useEffect(function () {
     async function fetchMovies() {
-      setIsLoading(true);
-      const res = await fetch(`${API}&s=${query}`);
-      const data = await res.json();
-      setMovies(data.Search);
-      // State is set after function called
-      // Console logging movies will show empty array
-      setIsLoading(false);
+      try {
+        setIsLoading(true);
+        const res = await fetch(`${API}&s=${query}`);
+
+        if (!res.ok)
+          throw new Error('Something went wrong with fetching movies');
+
+        const data = await res.json();
+
+        if (data.Response === 'False') throw new Error('Movie not found');
+
+        setMovies(data.Search);
+        // State is set after function called
+        // Console logging movies will show empty array
+      } catch (err) {
+        console.log(err.message);
+        setError(err.message);
+        // finally means it is always executed
+      } finally {
+        setIsLoading(false);
+      }
     }
 
     fetchMovies();
@@ -97,7 +112,13 @@ export default function App() {
   // If we set state here, it will cause an infinite loop and take a lot of resources
   // We can't have side effects here
   // We can't set state here
-
+  /* isLoading ? (
+            <Loader />
+          ) : error ? (
+            <ErrorMessage />
+          ) : (
+            <MovieList movies={movies} />
+          )*/
   return (
     <>
       <NavBar>
@@ -106,7 +127,11 @@ export default function App() {
       </NavBar>
 
       <Main>
-        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />}</Box>
+        <Box>
+          {isLoading && <Loader />}
+          {!isLoading && !error && <MovieList movies={movies} />}
+          {error && <ErrorMessage message={error} />}
+        </Box>
 
         <Box>
           <WatchedSummary watched={watched} />
@@ -124,6 +149,16 @@ export default function App() {
 function Loader() {
   return <p className="loader">Loading...</p>;
 }
+
+function ErrorMessage({ message }) {
+  return (
+    <p className="error">
+      <span>⚠</span>
+      {message}
+    </p>
+  );
+}
+
 // Structural Component
 function NavBar({ children }) {
   // Component composition using children prop
