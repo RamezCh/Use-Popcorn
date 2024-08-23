@@ -50,9 +50,16 @@ const tempWatchedData = [
 const average = arr =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
+const API = 'http://www.omdbapi.com/?i=tt3896198&apikey=9f23dce6';
+
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
+  // If we set state here, it will cause an infinite loop and take a lot of resources
+  fetch(`${API}&s=interstellar`)
+    .then(res => res.json())
+    .then(data => console.log(data.Search));
+  // We can't set state here
 
   return (
     <>
