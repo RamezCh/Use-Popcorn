@@ -52,6 +52,22 @@ const average = arr =>
 
 const API = 'http://www.omdbapi.com/?i=tt3896198&apikey=9f23dce6';
 
+/*
+A side effect is interaction between a React component and the world outside the component. Code that actually does something like data fetching, setting up timers, manually accessing the DOM..
+*/
+
+// Effects allow us to write code that will run at different moments, mount(1st render), re-render(state change), or unmount(deletion of component)
+
+/*
+Event Handlers vs Effects
+
+Event Handlers: click, submit, mouseEnter..
+
+Effects: first render, re-render, goodbye render
+
+It keeps components synchronized with some external system like API movie data
+*/
+
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
@@ -65,6 +81,8 @@ export default function App() {
     fetch(`${API}&s=interstellar`)
       .then(res => res.json())
       .then(data => setMovies(data.Search));
+
+    return () => console.log('Cleanup');
   }, []);
   // If we set state here, it will cause an infinite loop and take a lot of resources
   // We can't have side effects here
