@@ -387,3 +387,39 @@ We are defining the public interface of our component and choosing how much comp
 
 In the end a component is basically just an abstraction
 */
+
+/*
+What is the useEffect Dependency Array?
+
+By default, effects run after every render. We can prevent that by passing a dependency array.
+
+Without the dependency array, React doesn't know when to run the effect
+
+Each time one of the dependencies changes, the effect will be executed again
+
+Every state variable and prop used inside the effect MUST be included in the dependency array
+
+
+useEffect is a synchronization mechanism
+
+it is like an event listener that is listening for one dependency to change. Whenever a dependency changes, it will execute the effect again.
+
+Effects react to updates to state and props used inside the effect (the dependencies). So effects are "reactive" like state updates re-rendering the UI
+
+Note: this ONLY works when you specific the dependency array
+
+Dependency change -> Effect is executed again, component is re-rendered
+
+useEffect(fn, [x,y,z]); -> synch with x,y,z and mount+re-render by updating x, y or z
+
+useEffect(fn, []); -> synch with no state or props, only runs on mount(1st render)
+
+useEffect(fn); -> effect will run on every render (bad idea/infinite loop) | synch with everything
+
+
+When are effects executed?
+
+Mount(Initial Render) -> Commit -> Browser Paint -> EFFECT -> title Changes -> Re-render -> Commit -> Layout Effect -> Browser Paint -> Effect -> ? -> Unmount(Disappear from screen) -> ?
+
+Downside effect: if it sets state, an additional render will be required
+*/
