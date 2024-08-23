@@ -73,7 +73,19 @@ export default function App() {
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const query = 'interstellar';
+  const [query, setQuery] = useState('');
+
+  /*
+  // We get A after browser paint, 1 time only
+  useEffect(() => console.log('After initial render'), []);
+  // We get B after A and whenever we re-render
+  useEffect(() => console.log('After every render'));
+  // Renders only on query state change
+  useEffect(() => console.log('After Query State change'), [query]);
+  // We get C first because useEffect happens after Browser Paint
+  console.log('During Render');
+  */
+
   // [] means only run on mount (1st render)
   // useEffect hook we used it to register an effect
   // Meaning when do we want to run this component?
@@ -82,33 +94,44 @@ export default function App() {
   // Once since we used []
   // Effects can't be asynchronous
   // So we put inside a function that is asynchronous lol
-  useEffect(function () {
-    async function fetchMovies() {
-      try {
-        setIsLoading(true);
-        const res = await fetch(`${API}&s=${query}`);
 
-        if (!res.ok)
-          throw new Error('Something went wrong with fetching movies');
+  useEffect(
+    function () {
+      async function fetchMovies() {
+        try {
+          setIsLoading(true);
+          setError('');
+          const res = await fetch(`${API}&s=${query}`);
 
-        const data = await res.json();
+          if (!res.ok)
+            throw new Error('Something went wrong with fetching movies');
 
-        if (data.Response === 'False') throw new Error('Movie not found');
+          const data = await res.json();
 
-        setMovies(data.Search);
-        // State is set after function called
-        // Console logging movies will show empty array
-      } catch (err) {
-        console.log(err.message);
-        setError(err.message);
-        // finally means it is always executed
-      } finally {
-        setIsLoading(false);
+          if (data.Response === 'False') throw new Error('Movie not found');
+
+          setMovies(data.Search);
+          // State is set after function called
+          // Console logging movies will show empty array
+        } catch (err) {
+          console.log(err.message);
+          setError(err.message);
+          // finally means it is always executed
+        } finally {
+          setIsLoading(false);
+        }
       }
-    }
 
-    fetchMovies();
-  }, []);
+      if (query.length < 3) {
+        setMovies([]);
+        setError('');
+        return;
+      }
+      // we have to type slowly due to something called the race condition
+      fetchMovies();
+    },
+    [query]
+  );
   // If we set state here, it will cause an infinite loop and take a lot of resources
   // We can't have side effects here
   // We can't set state here
@@ -122,8 +145,8 @@ export default function App() {
   return (
     <>
       <NavBar>
-        <Search />
-        <NumResults movies={movies} />
+        <Search query={query} setQuery={setQuery} />
+        {movies && <NumResults movies={movies} />}
       </NavBar>
 
       <Main>
@@ -188,8 +211,7 @@ function NumResults({ movies }) {
   );
 }
 // Stateful Component
-function Search() {
-  const [query, setQuery] = useState('');
+function Search({ query, setQuery }) {
   return (
     <input
       className="search"
