@@ -71,18 +71,25 @@ It keeps components synchronized with some external system like API movie data
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
+  const query = 'interstellar';
   // [] means only run on mount (1st render)
   // useEffect hook we used it to register an effect
   // Meaning when do we want to run this component?
   // When it is painted on the Screen
   // How many times?
   // Once since we used []
+  // Effects can't be asynchronous
+  // So we put inside a function that is asynchronous lol
   useEffect(function () {
-    fetch(`${API}&s=interstellar`)
-      .then(res => res.json())
-      .then(data => setMovies(data.Search));
+    async function fetchMovies() {
+      const res = await fetch(`${API}&s=${query}`);
+      const data = await res.json();
+      setMovies(data.Search);
+      // State is set after function called
+      // Console logging movies will show empty array
+    }
 
-    return () => console.log('Cleanup');
+    fetchMovies();
   }, []);
   // If we set state here, it will cause an infinite loop and take a lot of resources
   // We can't have side effects here
