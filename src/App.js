@@ -136,7 +136,8 @@ export default function App() {
         setError('');
         return;
       }
-      // we have to type slowly due to something called the race condition
+
+      handleCloseMovie();
       fetchMovies();
 
       // Cleanup
@@ -150,6 +151,7 @@ export default function App() {
     },
     [query]
   );
+
   // If we set state here, it will cause an infinite loop and take a lot of resources
   // We can't have side effects here
   // We can't set state here
@@ -360,6 +362,27 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     Genre: genre,
   } = movie;
 
+  // React team calls useEffect an escape hatch
+  // Means we can use JS inside and not React way
+  useEffect(
+    function () {
+      // Function for event
+      function callback(e) {
+        if (e.code === 'Escape') {
+          onCloseMovie();
+        }
+      }
+      // Add event listener
+      document.addEventListener('keydown', callback);
+      // Cleanup event listener
+      return function () {
+        // Function must be same as one above
+        document.removeEventListener('keydown', callback);
+      };
+    },
+    [onCloseMovie]
+  );
+
   function handleAdd() {
     const newWatchedMovie = {
       imdbID: selectedId,
@@ -401,7 +424,6 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
         document.title = 'usePopcorn';
         // it runs after unmount(when state and props gone and component deleted), how does it remember title?
         // It is due to Closure, a function remembers all variables that were present at time and place a function was created
-        console.log(`Clean up effect for movie ${title}`);
       };
     },
     // Cleanup: cancel request, cancel subscription, stop timer, remove listener
