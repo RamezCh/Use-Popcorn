@@ -99,11 +99,15 @@ export default function App() {
 
   useEffect(
     function () {
+      const controller = new AbortController();
+
       async function fetchMovies() {
         try {
           setIsLoading(true);
           setError('');
-          const res = await fetch(`${API}&s=${query}`);
+          const res = await fetch(`${API}&s=${query}`, {
+            signal: controller.signal,
+          });
 
           if (!res.ok)
             throw new Error('Something went wrong with fetching movies');
@@ -115,9 +119,12 @@ export default function App() {
           setMovies(data.Search);
           // State is set after function called
           // Console logging movies will show empty array
+          setError('');
         } catch (err) {
-          console.log(err.message);
-          setError(err.message);
+          console.error(err.message);
+          if (err.name !== 'AbortError') {
+            setError(err.message);
+          }
           // finally means it is always executed
         } finally {
           setIsLoading(false);
@@ -131,6 +138,15 @@ export default function App() {
       }
       // we have to type slowly due to something called the race condition
       fetchMovies();
+
+      // Cleanup
+      // Race condition is when we make too many request and last one to arrive gets displayed
+      return function () {
+        // Using AbortController to stop request
+        // It counts abort as error, AbortError so we need to do condition for that
+        controller.abort();
+        // If you check network fetch/xhr section you can see old requests canceled
+      };
     },
     [query]
   );
@@ -383,6 +399,9 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
       // Executes when component unmounts
       return function () {
         document.title = 'usePopcorn';
+        // it runs after unmount(when state and props gone and component deleted), how does it remember title?
+        // It is due to Closure, a function remembers all variables that were present at time and place a function was created
+        console.log(`Clean up effect for movie ${title}`);
       };
     },
     // Cleanup: cancel request, cancel subscription, stop timer, remove listener
