@@ -379,7 +379,14 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     function () {
       if (!title) return;
       document.title = `Movie | ${title}`;
+      // Cleanup function
+      // Executes when component unmounts
+      return function () {
+        document.title = 'usePopcorn';
+      };
     },
+    // Cleanup: cancel request, cancel subscription, stop timer, remove listener
+    // component unmounts => execute cleanup function
     [title]
   );
 
