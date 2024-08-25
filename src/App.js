@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import StarRating from './StarRating';
 
 const average = arr =>
@@ -199,6 +199,27 @@ function Search({ query, setQuery }) {
   }, []);
   */
 
+  // How to select DOM elements in React
+  const inputEl = useRef(null); // Initial value
+  useEffect(function () {
+    function callback(e) {
+      if (document.activeElement === inputEl.current) {
+        return;
+      }
+      // Current is box where we store value
+      inputEl.current.focus();
+      setQuery('');
+      // inputEl.current is where we used ref={}
+      // so input DOM element
+    }
+    // Add enter event listener
+    if (e.code === 'Enter') {
+      document.addEventListener('keydown', callback);
+    }
+    // Clean Up
+    return () => document.removeEventListener('keydown', callback);
+  }, []);
+
   return (
     <input
       className="search"
@@ -206,6 +227,7 @@ function Search({ query, setQuery }) {
       placeholder="Search movies..."
       value={query}
       onChange={e => setQuery(e.target.value)}
+      ref={inputEl}
     />
   );
 }
