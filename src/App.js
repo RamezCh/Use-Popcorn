@@ -188,6 +188,17 @@ function NumResults({ movies }) {
 }
 // Stateful Component
 function Search({ query, setQuery }) {
+  /*
+    // how NOT to select DOM elements in React
+  useEffect(function () {
+    // React is Declarative
+    // This isn't declarative
+    const el = document.querySelector('.search');
+    console.log(el);
+    el.focus();
+  }, []);
+  */
+
   return (
     <input
       className="search"
