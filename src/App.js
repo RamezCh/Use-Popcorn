@@ -502,3 +502,26 @@ Note: Fn must be pure & no arguments. Called only on initial render
   Note: Fn must be pure and return next state
   Make sure to NOT mutate objects or arrays but to replace them
 */
+
+/*
+What are Refs?
+
+Ref = reference
+
+"Box"(object) with a mutable .current property that is persisted across renders("normal" variables are always reset)
+
+Two big use cases:
+> Create variables that stay the same between renders(prev State, setTimeout ID..)
+
+>Select and store DOM elements
+
+Refs are for data that is NOT rendered: usually only appear in event handlers or effects, not in JSX (otherwise use state)
+
+Do NOT read write or read .current in render logic (like state)
+
+Updating Refs does not cause re-render
+
+useState for re-render component, immutable, async
+
+useRef for remembering state, not re-rendering, mutable, sync
+*/
