@@ -658,3 +658,41 @@ Mount(Initial Render) -> Commit -> Browser Paint -> EFFECT -> title Changes -> R
 
 Downside effect: if it sets state, an additional render will be required
 */
+
+/*
+React Hooks are special built-in functions that allow us to "hook" into React internals:
+- Creating and accessing state from Fiber tree
+- Registering side effects in Fiber tree
+- Manual DOM selections
+- Many more
+
+Hooks always start with use (useState, useEffect..)
+
+We can create our own custom hooks that start with the word use
+
+Most used hooks:
+- useState
+- useEffect
+- useReducer (will learn)
+- useContext (will learn)
+
+less used:
+- useRef (will learn)
+- useCallback (will learn)
+- useMemo (will learn)
+- useTransition (will learn)
+- useDeferredValue (will learn)
+- useLayoutEffect
+- useDebugValue
+- useImperativeHandle
+- useId
+
+The Rules of Hooks:
+- Only call hooks at the top level
+Do NOT call hooks inside conditionals, loops, nested functions, or after an early return
+
+This is necessary to ensure that hooks are always called in the same order (hooks rely on this)
+
+- Only call hooks from React functions
+Only call hooks inside a function component or a custom hook
+*/
