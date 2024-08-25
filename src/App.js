@@ -471,3 +471,23 @@ function WatchedMovie({ movie, onDeleteWatched }) {
     </li>
   );
 }
+
+/*
+useState Summary:
+- Create State
+-> Directly a value OR callback fn (lazy evaluation)
+Directly: const[count, setCount] = useState(23);
+
+Lazy evaluation:
+const [count, setCount] = useState(()=>localStorage.getItem('count'));
+
+Note: Fn must be pure & no arguments. Called only on initial render
+
+- Update State
+> Simple way: setCount(1000);
+> Based on current state:
+  setCount((c)=>c+1) [preferred way]
+
+  Note: Fn must be pure and return next state
+  Make sure to NOT mutate objects or arrays but to replace them
+*/
