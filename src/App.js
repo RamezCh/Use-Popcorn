@@ -217,7 +217,11 @@ function Movie({ movie, onSelectMovie }) {
 }
 
 function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
+  // What we pass to useState is initial state
+  // React only looks at it at initial render
   const [movie, setMovie] = useState({});
+
+  // Updating state is asynchronous
   const [isLoading, setIsLoading] = useState(false);
   const [userRating, setUserRating] = useState('');
 
@@ -238,6 +242,11 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     Director: director,
     Genre: genre,
   } = movie;
+
+  // derived state
+  // gets created on each re-render
+  const isTop = imdbRating > 8;
+  console.log(isTop);
 
   useEffect(
     function () {
