@@ -8,11 +8,24 @@ const API = 'http://www.omdbapi.com/?apikey=9f23dce6';
 
 export default function App() {
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedId, setSelectedId] = useState(null);
+  // do not call a fn in useState, instead use Callbacks ( a fn that can be called later)
   const [query, setQuery] = useState('');
+
+  //const [watched, setWatched] = useState([]);
+  // useState takes call back fn as well
+  // only executed once on the initial render
+  const [watched, setWatched] = useState(function () {
+    // pure fn only, no arguments
+    const storedValue = localStorage.getItem('watched'); // watched is key
+    // it uses return value as a state
+    // we stored data as string
+    // we need array
+    // JSON converts string to object
+    return JSON.parse(storedValue);
+  });
 
   useEffect(
     function () {
@@ -72,11 +85,26 @@ export default function App() {
 
   function handleAddWatched(movie) {
     setWatched(watched => [...watched, movie]);
+    // Stale state, old version of watched, not updated yet
+    // localStorage.setItem('watched', watched)
+
+    // Using this way, we get old array and add on top of it new value movie
+    // LocalStorage only takes strings
+    // So we do Json.stringify
+    // localStorage.setItem('watched', JSON.stringify([...watched, movie]));
   }
 
   function handleDeleteWatched(id) {
     setWatched(watched => watched.filter(movie => movie.imdbID !== id));
   }
+
+  //Order: State -> event handler -> effects
+  useEffect(
+    function () {
+      localStorage.setItem('watched', JSON.stringify(watched));
+    },
+    [watched]
+  );
 
   return (
     <>
