@@ -557,3 +557,24 @@ useState for re-render component, immutable, async
 
 useRef for remembering state, not re-rendering, mutable, sync
 */
+
+/*
+What are custom Hooks?
+When to Create one?
+
+It is all about reusability
+
+I wanna reuse UI or I wanna reuse Logic
+
+UI -> Component
+
+Logic -> Does it contain any Hooks? 
+No -> Regular Fn
+Yes -> Custom Hook
+
+Custom Hooks allow us to re-use non-visual logic
+
+One custom hook should have one purpose, to make it re-usable and portable (even across multiple projects)
+
+Rules of hooks apply to custom hooks as well
+*/
