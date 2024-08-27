@@ -203,21 +203,21 @@ function Search({ query, setQuery }) {
   const inputEl = useRef(null); // Initial value
   useEffect(
     function () {
+      // Create callback fn so we can clean up later
       function callback(e) {
         if (document.activeElement === inputEl.current) {
           return;
         }
         // Current is box where we store value
-        inputEl.current.focus();
-        setQuery('');
+        if (e.code === 'Enter') {
+          inputEl.current.focus();
+          setQuery('');
+        }
         // inputEl.current is where we used ref={}
         // so input DOM element
-
-        // Add enter event listener
-        if (e.code === 'Enter') {
-          document.addEventListener('keydown', callback);
-        }
       }
+      // Add event listener
+      document.addEventListener('keydown', callback);
       // Clean Up
       return () => document.removeEventListener('keydown', callback);
     },
@@ -489,7 +489,7 @@ function WatchedMovie({ movie, onDeleteWatched }) {
   return (
     <li>
       <img src={movie.poster} alt={`${movie.title} poster`} />
-      <h3>{movie.Title}</h3>
+      <h3>{movie.title}</h3>
       <div>
         <p>
           <span>⭐️</span>
