@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import StarRating from './StarRating';
+import { useMovies } from './useMovies';
 
 const average = arr =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -7,9 +8,6 @@ const average = arr =>
 const API = 'http://www.omdbapi.com/?apikey=9f23dce6';
 
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
   const [selectedId, setSelectedId] = useState(null);
   // do not call a fn in useState, instead use Callbacks ( a fn that can be called later)
   const [query, setQuery] = useState('');
@@ -26,54 +24,8 @@ export default function App() {
     // JSON converts string to object
     return JSON.parse(storedValue);
   });
-
-  useEffect(
-    function () {
-      const controller = new AbortController();
-
-      async function fetchMovies() {
-        try {
-          setIsLoading(true);
-          setError('');
-          const res = await fetch(`${API}&s=${query}`, {
-            signal: controller.signal,
-          });
-
-          if (!res.ok)
-            throw new Error('Something went wrong with fetching movies');
-
-          const data = await res.json();
-
-          if (data.Response === 'False') throw new Error('Movie not found');
-
-          setMovies(data.Search);
-
-          setError('');
-        } catch (err) {
-          console.error(err.message);
-          if (err.name !== 'AbortError') {
-            setError(err.message);
-          }
-        } finally {
-          setIsLoading(false);
-        }
-      }
-
-      if (query.length < 3) {
-        setMovies([]);
-        setError('');
-        return;
-      }
-
-      handleCloseMovie();
-      fetchMovies();
-
-      return function () {
-        controller.abort();
-      };
-    },
-    [query]
-  );
+  // Using our own Custom hook
+  const { movies, isLoading, error } = useMovies(query, handleCloseMovie);
 
   function handleSelectMovie(id) {
     setSelectedId(selectedId => (id === selectedId ? null : id));
