@@ -201,24 +201,28 @@ function Search({ query, setQuery }) {
 
   // How to select DOM elements in React
   const inputEl = useRef(null); // Initial value
-  useEffect(function () {
-    function callback(e) {
-      if (document.activeElement === inputEl.current) {
-        return;
+  useEffect(
+    function () {
+      function callback(e) {
+        if (document.activeElement === inputEl.current) {
+          return;
+        }
+        // Current is box where we store value
+        inputEl.current.focus();
+        setQuery('');
+        // inputEl.current is where we used ref={}
+        // so input DOM element
+
+        // Add enter event listener
+        if (e.code === 'Enter') {
+          document.addEventListener('keydown', callback);
+        }
       }
-      // Current is box where we store value
-      inputEl.current.focus();
-      setQuery('');
-      // inputEl.current is where we used ref={}
-      // so input DOM element
-    }
-    // Add enter event listener
-    if (e.code === 'Enter') {
-      document.addEventListener('keydown', callback);
-    }
-    // Clean Up
-    return () => document.removeEventListener('keydown', callback);
-  }, []);
+      // Clean Up
+      return () => document.removeEventListener('keydown', callback);
+    },
+    [setQuery]
+  );
 
   return (
     <input
@@ -286,6 +290,11 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
   const [isLoading, setIsLoading] = useState(false);
   const [userRating, setUserRating] = useState('');
 
+  const countRef = useRef(0);
+  useEffect(() => {
+    if (userRating) countRef.current++;
+  }, [userRating]);
+
   const isWatched = watched.map(mov => mov.imdbID).includes(selectedId);
   const watchedUserRating = watched.find(
     mov => mov.imdbID === selectedId
@@ -337,6 +346,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
       imdbRating: Number(imdbRating),
       runtime: Number(runtime.split(' ').at(0)),
       userRating,
+      countRatingDecisions: countRef.current,
     };
 
     onAddWatched(newWatchedMovie);
@@ -383,8 +393,8 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
             <button className="btn-back" onClick={onCloseMovie}>
               &larr;
             </button>
-            <img src={poster} alt={`Poster of ${movie} movie`} />
-            <div className="details-overveiw">
+            <img src={poster} alt={`Poster of ${title} movie`} />
+            <div className="details-overview">
               <h2>{title}</h2>
               <p>
                 {released} &bull; {runtime}
