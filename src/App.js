@@ -179,13 +179,11 @@ function Search({ query, setQuery }) {
 */
 
   useKey('Enter', function () {
-    if (e.code === 'Enter') {
-      if (document.activeElement === inputEl.current) {
-        return;
-      }
-      inputEl.current.focus();
-      setQuery('');
+    if (document.activeElement === inputEl.current) {
+      return;
     }
+    inputEl.current.focus();
+    setQuery('');
   });
 
   return (
