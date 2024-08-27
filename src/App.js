@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import StarRating from './StarRating';
 import { useMovies } from './useMovies';
 import { useLocalStorageState } from './useLocalStorageState';
+import { useKey } from './useKey';
 
 const average = arr =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -151,6 +152,8 @@ function Search({ query, setQuery }) {
 
   // How to select DOM elements in React
   const inputEl = useRef(null); // Initial value
+
+  /*
   useEffect(
     function () {
       // Create callback fn so we can clean up later
@@ -173,6 +176,17 @@ function Search({ query, setQuery }) {
     },
     [setQuery]
   );
+*/
+
+  useKey('Enter', function () {
+    if (e.code === 'Enter') {
+      if (document.activeElement === inputEl.current) {
+        return;
+      }
+      inputEl.current.focus();
+      setQuery('');
+    }
+  });
 
   return (
     <input
@@ -268,24 +282,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
   const isTop = imdbRating > 8;
   console.log(isTop);
 
-  useEffect(
-    function () {
-      // Function for event
-      function callback(e) {
-        if (e.code === 'Escape') {
-          onCloseMovie();
-        }
-      }
-      // Add event listener
-      document.addEventListener('keydown', callback);
-      // Cleanup event listener
-      return function () {
-        // Function must be same as one above
-        document.removeEventListener('keydown', callback);
-      };
-    },
-    [onCloseMovie]
-  );
+  useKey('Escape', onCloseMovie);
 
   function handleAdd() {
     const newWatchedMovie = {
